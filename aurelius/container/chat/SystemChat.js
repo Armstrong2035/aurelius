@@ -18,6 +18,7 @@ export default function SystemChat({ content }) {
       <Image
         src={marcusAureliusBust}
         width={48}
+        alt={"Marcus Aurelius Bust"}
         height={48}
         style={{ borderRadius: 50 }}
       />

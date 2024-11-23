@@ -1,28 +1,69 @@
 "use client";
-import { Box, TextField } from "@mui/material";
-import { useCallback, useState } from "react";
+import { Box, IconButton, TextField } from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
+import { useChatStore } from "./chatstore";
+
 import React from "react";
+
 export default function Prompt() {
-  const [newPrompt, setNewPrompt] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const addUserChat = useChatStore((state) => state.addUserChat);
+  async function handleSubmit(formData) {
+    const message = formData.get("message");
 
-  const handleInput = async (e) => {
-    //function for form validation (security purposes  )
-
-    setNewPrompt(e.target.value);
-  };
-
-  useCallback(() => {
-    const sendToClaude = async () => {
-      //await function to send the prompt to the chatArray
-      //await function to send to claude using newPrompt as a parameter. When you write this function in the server, it should also send it to chatArray
-      //The objective here is for the prompt to get to chatArray first.
+    const createChat = () => {
+      const messageObject = {
+        type: "user",
+        content: message,
+        timestamp: new Date().toISOString(),
+      };
+      addUserChat(messageObject);
     };
-  }, [newPrompt]);
+
+    await createChat();
+    //console.log(message);
+  }
+  //   const [newPrompt, setNewPrompt] = useState("");
+  //   const [isLoading, setIsLoading] = useState(false);
+
+  //   cos
+
+  //   const handleInput = async (e) => {
+  //     //function for form validation (security purposes  )
+
+  //     setNewPrompt(e.target.value);
+
+  //   };
+
+  //   useCallback(() => {
+  //     const sendToClaude = async () => {
+
+  //       //await function to send the prompt to the chatArray
+  //       //await function to send to claude using newPrompt as a parameter. When you write this function in the server, it should also send it to chatArray
+  //       //The objective here is for the prompt to get to chatArray first.
+  //     };
+  //   }, [newPrompt]);
 
   return (
     <Box>
-      <TextField label={"Talk to Aurelius"} variant="outlined" fullWidth />
+      <form
+        action={handleSubmit}
+        style={{
+          display: "flex",
+          direction: "row",
+          backgroundColor: "inherit",
+        }}
+      >
+        <input
+          id="input"
+          type="text"
+          name="message"
+          required
+          style={{ width: "100%", padding: "30px" }}
+        />
+        <button type={"submit"}>
+          <SendIcon />
+        </button>
+      </form>
     </Box>
   );
 }

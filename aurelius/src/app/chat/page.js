@@ -1,5 +1,18 @@
 import Chat from "../../../container/chat/Chat";
 import Prompt from "../../../container/chat/Prompt";
+import { revalidatePath } from "next/cache";
+
+// async function addUserChat(formData) {
+//   const message = formData.get("message");
+//   chatArray.push({
+//     type: "user",
+//     content: message,
+//     timestamp: new Date().toISOString(),
+//     id: `msg_${Date.now()}`,
+//   });
+
+//   revalidatePath("/chat");
+// }
 export default function Page() {
   const chatArray = [
     {
@@ -60,7 +73,7 @@ export default function Page() {
 
   return (
     <div style={{}}>
-      <Chat chatArray={chatArray} />
+      <Chat />
     </div>
   );
 }
