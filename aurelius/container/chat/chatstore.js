@@ -5,6 +5,9 @@ const useChatStore = create((set) => ({
   chatArray: [],
   isLoading: false,
   error: null,
+  setIsLoading: (loading) => {
+    set({ isLoading: loading });
+  },
 
   addUserChat: (message) => {
     set((state) => ({

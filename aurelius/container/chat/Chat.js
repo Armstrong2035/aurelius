@@ -3,11 +3,19 @@ import React, { useState } from "react";
 import SystemChat from "./SystemChat";
 import UserChat from "./UserChat";
 import Prompt from "./Prompt";
-import { Grid2, Box, Container, AppBar, Toolbar } from "@mui/material";
+import {
+  Grid2,
+  Box,
+  Container,
+  AppBar,
+  Toolbar,
+  CircularProgress,
+} from "@mui/material";
 import { useChatStore } from "./chatstore";
 
 export default function Chat({}) {
   const chatArray = useChatStore((state) => state.chatArray);
+  const isLoading = useChatStore((state) => state.isLoading);
   return (
     <Container
       sx={{
@@ -39,6 +47,12 @@ export default function Chat({}) {
           </Grid2>
         ))}
       </Grid2>
+
+      {isLoading && (
+        <Grid2 alignSelf={"center"} justifySelf={"center"}>
+          <CircularProgress />
+        </Grid2>
+      )}
       <Box
         sx={{
           position: "fixed",

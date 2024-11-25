@@ -8,10 +8,11 @@ import { askClaude } from "../../utils/askCalude";
 import { useChatStore } from "./chatstore";
 export default function Prompt() {
   const formRef = useRef(null);
-  const [isLoading, setIsLoading] = useState(false);
+
   const addUserChat = useChatStore((state) => state.addUserChat);
   const addSystemChat = useChatStore((state) => state.addSystemChat);
-  const loading = useChatStore((state) => state.loading);
+  const setIsLoading = useChatStore((state) => state.setIsLoading);
+  const isLoading = useChatStore((state) => state.isLoading);
 
   async function handleSubmit(formData) {
     const message = formData.get("message");
