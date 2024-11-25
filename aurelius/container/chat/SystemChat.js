@@ -3,6 +3,7 @@ import marcusAureliusBust from "../../public/images/marcus-aurelius-bust.png";
 import Image from "next/image";
 
 export default function SystemChat({ content }) {
+  console.log(content);
   return (
     <Paper
       sx={{
@@ -22,7 +23,7 @@ export default function SystemChat({ content }) {
         height={48}
         style={{ borderRadius: 50 }}
       />
-      <Typography>{content}</Typography>
+      <Typography>{content[0].text}</Typography>
     </Paper>
   );
 }

@@ -1,56 +1,63 @@
+// components/Prompt.js
 "use client";
-import { Box, IconButton, TextField } from "@mui/material";
+import React, { useRef, useState } from "react";
+import { Box, IconButton, CircularProgress } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
+import UserChat from "./UserChat";
+import { askClaude } from "../../utils/askCalude";
 import { useChatStore } from "./chatstore";
-
-import React from "react";
-
 export default function Prompt() {
+  const formRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
   const addUserChat = useChatStore((state) => state.addUserChat);
+  const addSystemChat = useChatStore((state) => state.addSystemChat);
+  const loading = useChatStore((state) => state.loading);
+
   async function handleSubmit(formData) {
     const message = formData.get("message");
+    if (!message?.trim()) return;
 
-    const createChat = () => {
-      const messageObject = {
-        type: "user",
-        content: message,
-        timestamp: new Date().toISOString(),
-      };
-      addUserChat(messageObject);
-    };
+    setIsLoading(true);
+    try {
+      // Add user message to chat
+      addUserChat(message);
 
-    await createChat();
-    //console.log(message);
+      // Get Claude's response
+      const response = await askClaude(message);
+
+      // Add system response to chat
+      addSystemChat(response);
+
+      // Clear the form
+      formRef.current?.reset();
+    } catch (error) {
+      console.error("Chat error:", error);
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
+    }
   }
-  //   const [newPrompt, setNewPrompt] = useState("");
-  //   const [isLoading, setIsLoading] = useState(false);
-
-  //   cos
-
-  //   const handleInput = async (e) => {
-  //     //function for form validation (security purposes  )
-
-  //     setNewPrompt(e.target.value);
-
-  //   };
-
-  //   useCallback(() => {
-  //     const sendToClaude = async () => {
-
-  //       //await function to send the prompt to the chatArray
-  //       //await function to send to claude using newPrompt as a parameter. When you write this function in the server, it should also send it to chatArray
-  //       //The objective here is for the prompt to get to chatArray first.
-  //     };
-  //   }, [newPrompt]);
 
   return (
-    <Box>
+    <Box
+      sx={{
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        padding: 2,
+        backgroundColor: "background.paper",
+        borderTop: 1,
+        borderColor: "divider",
+      }}
+    >
       <form
+        ref={formRef}
         action={handleSubmit}
         style={{
           display: "flex",
-          direction: "row",
-          backgroundColor: "inherit",
+          alignItems: "center",
+          gap: "10px",
         }}
       >
         <input
@@ -58,12 +65,20 @@ export default function Prompt() {
           type="text"
           name="message"
           required
-          style={{ width: "100%", padding: "30px" }}
+          disabled={isLoading}
+          placeholder="Ask something..."
+          style={{
+            width: "100%",
+            padding: "15px",
+            borderRadius: "8px",
+            border: "1px solid #ddd",
+            fontSize: "16px",
+          }}
         />
-        <button type={"submit"}>
-          <SendIcon />
-        </button>
       </form>
+      <IconButton>
+        <SendIcon />
+      </IconButton>
     </Box>
   );
 }
